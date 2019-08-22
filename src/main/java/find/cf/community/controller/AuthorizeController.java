@@ -1,7 +1,7 @@
 package find.cf.community.controller;
 
-import find.cf.community.DTO.AccessTokenDTO;
-import find.cf.community.DTO.GitHubUser;
+import find.cf.community.dto.AccessTokenDTO;
+import find.cf.community.dto.GitHubUser;
 import find.cf.community.mapper.UserMapper;
 import find.cf.community.model.User;
 import find.cf.community.provider.GitHubProvider;
@@ -59,6 +59,7 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(gitHubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(gitHubUser.getAvatarUrl());
             userMapper.insert(user);
             //登录成功,写入session和cookie
             response.addCookie(new Cookie("token",token));

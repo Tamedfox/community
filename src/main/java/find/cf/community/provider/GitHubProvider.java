@@ -1,8 +1,8 @@
 package find.cf.community.provider;
 
 import com.alibaba.fastjson.JSON;
-import find.cf.community.DTO.AccessTokenDTO;
-import find.cf.community.DTO.GitHubUser;
+import find.cf.community.dto.AccessTokenDTO;
+import find.cf.community.dto.GitHubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 

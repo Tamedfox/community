@@ -1,0 +1,28 @@
+body{
+    background-color: gainsboro;
+}
+
+.main{
+    margin:30px;
+    background-color: white;
+}
+
+.publish-btn{
+    float: right;
+    margin: 5px;
+}
+
+.media-object{
+    height: 37px;
+    width: 37px;
+}
+
+.text-desc{
+    font-size: 12px;
+    font-weight: normal;
+    color:#999;
+}
+
+.profile .section{
+    margin-top: 15px;
+}
