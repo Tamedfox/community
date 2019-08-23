@@ -1,13 +1,16 @@
 package find.cf.community.controller;
 
+import find.cf.community.dto.QuestionDTO;
 import find.cf.community.mapper.QuestionMapper;
 import find.cf.community.mapper.UserMapper;
 import find.cf.community.model.Question;
 import find.cf.community.model.User;
+import find.cf.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,10 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
+    private UserMapper userMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
 
     @GetMapping("/publish")
     public String publish(){
@@ -28,14 +31,15 @@ public class PublishController {
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam("title") String title,
-                            @RequestParam("description") String description,
-                            @RequestParam("tag") String tag,
+    public String doPublish(@RequestParam(value = "title",required = false) String title,
+                            @RequestParam(value = "description",required = false) String description,
+                            @RequestParam(value = "tag",required = false) String tag,
+                            @RequestParam(value = "id",required = false) Integer id,
                             Model model,
                             HttpServletRequest request){
-//        model.addAttribute("title",title);
-//        model.addAttribute("description",description);
-//        model.addAttribute("description",description);
+        model.addAttribute("title",title);
+        model.addAttribute("description",description);
+        model.addAttribute("tag",tag);
 
         if(title == null || title.equals("")){
             model.addAttribute("error","问题不能为空");
@@ -63,10 +67,20 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        questionMapper.create(question);
+        question.setId(id);
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
 
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable("id") Integer id
+                         ,Model model){
+        QuestionDTO question = questionService.getById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+        return "publish";
+    }
 }

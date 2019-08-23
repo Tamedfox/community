@@ -2,6 +2,7 @@ package find.cf.community.Interceptor;
 
 import find.cf.community.mapper.UserMapper;
 import find.cf.community.model.User;
+import find.cf.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -24,7 +25,7 @@ public class SessionInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if("token".equals(cookie.getName())){
                     String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
+                    User user = userService.findByToken(token);
                     if(user != null){
                         request.getSession().setAttribute("user",user);
                     }

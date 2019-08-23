@@ -2,6 +2,7 @@ package find.cf.community.service;
 
 import find.cf.community.dto.PaginationDTO;
 import find.cf.community.dto.QuestionDTO;
+import find.cf.community.model.Question;
 
 public interface QuestionService {
 
@@ -29,4 +30,10 @@ public interface QuestionService {
      * @return
      */
     QuestionDTO getById(Integer id);
+
+    /**
+     * 更新或新建方法
+     * @param question
+     */
+    void createOrUpdate(Question question);
 }

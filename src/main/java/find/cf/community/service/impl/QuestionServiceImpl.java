@@ -9,7 +9,6 @@ import find.cf.community.model.User;
 import find.cf.community.service.QuestionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<QuestionDTO> questionDTOList = new ArrayList<QuestionDTO>();
 
         for (Question question : questions) {
-           User user = userMapper.findById(question.getCreator());
+           User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -101,7 +100,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<QuestionDTO> questionDTOList = new ArrayList<QuestionDTO>();
 
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -115,8 +114,28 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDTO getById(Integer id) {
         Question question = questionMapper.getById(id);
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
+        questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    /**
+     * 更新或创建问题
+     * @param question
+     */
+    @Override
+    public void createOrUpdate(Question question) {
+        if(question.getId() == null){
+            //创建问题
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        }else{
+            //更新问题
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.update(question);
+        }
     }
 }

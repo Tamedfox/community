@@ -1,7 +1,6 @@
 package find.cf.community.controller;
 
 import find.cf.community.dto.QuestionDTO;
-import find.cf.community.mapper.QuestionMapper;
 import find.cf.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
