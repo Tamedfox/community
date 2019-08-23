@@ -36,4 +36,10 @@ public interface QuestionService {
      * @param question
      */
     void createOrUpdate(Question question);
+
+    /**
+     * 累加阅读数量
+     * @param id
+     */
+    void increamentView(Integer id);
 }
