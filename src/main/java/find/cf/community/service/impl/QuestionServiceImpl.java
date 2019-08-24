@@ -81,7 +81,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public PaginationDTO listByUserId(Integer userId, Integer page, Integer size) {
+    public PaginationDTO listByUserId(Long userId, Integer page, Integer size) {
 
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage = null;
@@ -127,7 +127,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
 
         if(question == null){
@@ -174,7 +174,7 @@ public class QuestionServiceImpl implements QuestionService {
      * @param id
      */
     @Override
-    public void increamentView(Integer id) {
+    public void increamentView(Long id) {
         Question question = new Question();
         question.setId(id);
         question.setViewCount(1);

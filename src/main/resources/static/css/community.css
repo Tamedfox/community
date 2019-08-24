@@ -9,12 +9,16 @@ body{
 
 .publish-btn{
     float: right;
-    margin: 5px;
+    margin: 10px;
 }
 
 .media-object{
     height: 37px;
     width: 37px;
+}
+
+.media-body{
+    padding-top: 6px;
 }
 
 .text-desc{
@@ -31,4 +35,41 @@ body{
     color: #999;
     font-size: 13px;
     margin-bottom: 15px;
+}
+
+.comment-area{
+    margin: 10px 0;
+}
+
+.comment-input{
+    margin-top: 80px;
+}
+
+
+.comment-body{
+    padding-top: 6px;
+}
+
+.comment-line-top{
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.comment-line-buttom{
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.comment-menu{
+    color: #999;
+}
+
+.comment-menu .icon{
+    margin: 5px 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.comment-menu .icon:hover{
+    color:#499ef3;
 }

@@ -22,14 +22,14 @@ public interface QuestionService {
      * @param size
      * @return
      */
-    PaginationDTO listByUserId(Integer id, Integer page, Integer size);
+    PaginationDTO listByUserId(Long id, Integer page, Integer size);
 
     /**
      *根据问题主键id查找问题
      * @param id
      * @return
      */
-    QuestionDTO getById(Integer id);
+    QuestionDTO getById(Long id);
 
     /**
      * 更新或新建方法
@@ -41,5 +41,5 @@ public interface QuestionService {
      * 累加阅读数量
      * @param id
      */
-    void increamentView(Integer id);
+    void increamentView(Long id);
 }

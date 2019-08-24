@@ -11,4 +11,11 @@ public interface QuestionExtMapper {
      */
    int increamentView(Question record);
 
+    /**
+     * 增加提问得评论数量
+     * @param record
+     * @return
+     */
+   int increamentCommentCount(Question record);
+
 }
