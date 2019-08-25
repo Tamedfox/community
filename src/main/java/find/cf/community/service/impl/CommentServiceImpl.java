@@ -2,12 +2,11 @@ package find.cf.community.service.impl;
 
 import find.cf.community.dto.CommentDTO;
 import find.cf.community.enums.CommentTypeEnum;
+import find.cf.community.enums.NotificationEnum;
+import find.cf.community.enums.NotificationStatusEnum;
 import find.cf.community.exception.CustomizeErrorCode;
 import find.cf.community.exception.CustomizeException;
-import find.cf.community.mapper.CommentMapper;
-import find.cf.community.mapper.QuestionExtMapper;
-import find.cf.community.mapper.QuestionMapper;
-import find.cf.community.mapper.UserMapper;
+import find.cf.community.mapper.*;
 import find.cf.community.model.*;
 import find.cf.community.service.CommentService;
 import org.springframework.beans.BeanUtils;
@@ -33,9 +32,12 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
+
     @Override
     @Transactional
-    public void insert(Comment comment) {
+    public void insert(Comment comment, User commentator) {
         if(comment.getParentId() == null || comment.getParentId() == 0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_NOT_FOUND);
         }
@@ -51,7 +53,16 @@ public class CommentServiceImpl implements CommentService {
             if(null == commentInDB){
                 throw new CustomizeException(CustomizeErrorCode.NO_COMMENT);
             }
+
+            //评论所在的问题
+            Question question = questionMapper.selectByPrimaryKey(commentInDB.getParentId());
+            if(question == null){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+
             commentMapper.insert(comment);
+            //插入通知信息,封装通知
+            createNotification(comment, commentInDB.getCommentator(), commentator.getName(), question.getTitle(), NotificationEnum.REPLY_COMMENT, question.getId());
         }else{
             //回复问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -61,14 +72,30 @@ public class CommentServiceImpl implements CommentService {
             commentMapper.insert(comment);
             question.setCommentCount(1);
             questionExtMapper.increamentCommentCount(question);
+            //插入通知消息
+            createNotification(comment,question.getCreator(), commentator.getName(), question.getTitle(), NotificationEnum.REPLY_QUESTION, question.getId());
         }
     }
 
+    //插入通知信息,封装通知
+    private void createNotification(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationEnum notificationEnum, Long outerid) {
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(notificationEnum.getType());
+        notification.setOuterid(outerid);
+        notification.setNotifier(comment.getCommentator());
+        notification.setReceiver(receiver);
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setNotifierName(notifierName);
+        notification.setOuterTitle(outerTitle);
+        notificationMapper.insert(notification);
+    }
+
     @Override
-    public List<CommentDTO> getByQuestionId(Long id) {
+    public List<CommentDTO> getByTargetId(Long id, CommentTypeEnum type) {
         //获得问题下的所有评论
         CommentExample commentExample = new CommentExample();
-        commentExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        commentExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(type.getType());
         commentExample.setOrderByClause("gmt_create desc");
         List<Comment> commentList = commentMapper.selectByExample(commentExample);
 

@@ -4,11 +4,14 @@ import find.cf.community.exception.CustomizeErrorCode;
 import find.cf.community.exception.CustomizeException;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class ResultDTO {
+public class ResultDTO<T> {
 
     private Integer code;
     private String message;
+    private T date;
     
     public static ResultDTO errorOf(Integer code, String message){
         ResultDTO resultDTO = new ResultDTO();
@@ -32,4 +35,11 @@ public class ResultDTO {
         return resultDTO;
     }
 
+    public static <T>ResultDTO okOf(T t) {
+        ResultDTO resultDTO = new ResultDTO();
+        resultDTO.setCode(200);
+        resultDTO.setMessage("操作成功");
+        resultDTO.setDate(t);
+        return resultDTO;
+    }
 }

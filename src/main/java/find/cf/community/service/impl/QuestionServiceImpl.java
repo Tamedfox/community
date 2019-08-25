@@ -11,13 +11,16 @@ import find.cf.community.model.Question;
 import find.cf.community.model.QuestionExample;
 import find.cf.community.model.User;
 import find.cf.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -64,7 +67,9 @@ public class QuestionServiceImpl implements QuestionService {
 
         Integer offset = size * (page - 1);
 
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(null,new RowBounds(offset,size));
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example,new RowBounds(offset,size));
 
         List<QuestionDTO> questionDTOList = new ArrayList<QuestionDTO>();
 
@@ -76,7 +81,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
     }
 
@@ -122,7 +127,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
     }
 
@@ -179,5 +184,29 @@ public class QuestionServiceImpl implements QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionExtMapper.increamentView(question);
+    }
+
+    /**
+     * 查找相关问题
+     * @param questionDTO
+     * @return
+     */
+    @Override
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        if(StringUtils.isBlank(questionDTO.getTag())){
+            return new ArrayList<>();
+        }
+
+        String[] tags = StringUtils.split(questionDTO.getTag(), "-");
+        String regexTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(questionDTO.getId());
+        question.setTag(regexTag);
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        return questions.stream().map(q -> {
+            QuestionDTO relativeQ = new QuestionDTO();
+            BeanUtils.copyProperties(q, relativeQ);
+            return relativeQ;
+        }).collect(Collectors.toList());
     }
 }

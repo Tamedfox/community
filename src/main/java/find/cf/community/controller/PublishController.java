@@ -1,11 +1,13 @@
 package find.cf.community.controller;
 
 import find.cf.community.dto.QuestionDTO;
+import find.cf.community.dto.TagDTO;
 import find.cf.community.mapper.QuestionMapper;
 import find.cf.community.mapper.UserMapper;
 import find.cf.community.model.Question;
 import find.cf.community.model.User;
 import find.cf.community.service.QuestionService;
+import find.cf.community.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class PublishController {
@@ -25,8 +28,13 @@ public class PublishController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private TagService tagService;
+
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model){
+        List<TagDTO> allTags = tagService.findAllTags();
+        model.addAttribute("tags",allTags);
         return "publish";
     }
 
@@ -41,6 +49,7 @@ public class PublishController {
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
 
+
         if(title == null || title.equals("")){
             model.addAttribute("error","问题不能为空");
             return "publish";
@@ -51,6 +60,11 @@ public class PublishController {
         }
         if(tag == null || tag.equals("")){
             model.addAttribute("error","标签不能为空");
+            return "publish";
+        }
+
+        if(!tagService.isValid(tag)){
+            model.addAttribute("error","输入标签非法");
             return "publish";
         }
 
@@ -79,11 +93,14 @@ public class PublishController {
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable("id") Long id
                          ,Model model){
+        List<TagDTO> allTags = tagService.findAllTags();
         QuestionDTO question = questionService.getById(id);
         model.addAttribute("title",question.getTitle());
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",question.getId());
+        model.addAttribute("tags",allTags);
         return "publish";
     }
+
 }

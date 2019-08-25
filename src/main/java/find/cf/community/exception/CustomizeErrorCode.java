@@ -9,7 +9,8 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     TYPE_WRONG(1005,"评论类型错误"),
     NO_COMMENT(1006,"评论不见了"),
     NO_QUESTION(1007,"问题不见了" ),
-    NO_CONTENT(1008,"没有内容" );
+    NO_CONTENT(1008,"没有内容" ),
+    WRONG_NOTIFICATION_READ(1009, "消息读取异常");
 
     private String message;
     private Integer code;

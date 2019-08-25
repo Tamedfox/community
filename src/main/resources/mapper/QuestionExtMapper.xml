@@ -23,10 +23,19 @@
     set
     VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
     where id = #{id}
-  </update>  <update id="increamentCommentCount" parameterType="find.cf.community.model.Question">
+  </update>
+
+  <update id="increamentCommentCount" parameterType="find.cf.community.model.Question">
     update QUESTION
     set
       COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
     where id = #{id}
   </update>
+
+  <select id="selectRelated" parameterType="find.cf.community.model.Question" resultMap="BaseResultMap">
+      select *
+      from QUESTION where id != #{id} and tag regexp #{tag}
+  </select>
+
+
 </mapper>

@@ -12,6 +12,17 @@ body{
     margin: 10px;
 }
 
+.question-tag{
+    margin: 5px;
+    padding:3px auto;
+}
+
+.question-related{
+    line-height: 30px;
+    font-size: 18px;
+    list-style: none;
+}
+
 .media-object{
     height: 37px;
     width: 37px;
@@ -72,4 +83,12 @@ body{
 
 .comment-menu .icon:hover{
     color:#499ef3;
+}
+
+.comment {
+    margin: 10px 0;
+}
+
+.publish-tag-tab{
+    display: none;
 }

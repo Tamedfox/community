@@ -4,6 +4,8 @@ import find.cf.community.dto.PaginationDTO;
 import find.cf.community.dto.QuestionDTO;
 import find.cf.community.model.Question;
 
+import java.util.List;
+
 public interface QuestionService {
 
     /**
@@ -42,4 +44,11 @@ public interface QuestionService {
      * @param id
      */
     void increamentView(Long id);
+
+    /**
+     * 查找相关问题
+     * @param questionDTO
+     * @return
+     */
+    List<QuestionDTO> selectRelated(QuestionDTO questionDTO);
 }
