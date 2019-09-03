@@ -41,7 +41,12 @@ public class QuestionServiceImpl implements QuestionService {
      * @param size
      */
     @Override
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search ,Integer page, Integer size) {
+
+        if(StringUtils.isNoneBlank(search)){
+            String[] split = StringUtils.split(search, " ");
+            search = Arrays.stream(split).collect(Collectors.joining("|"));
+        }
 
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage = null;

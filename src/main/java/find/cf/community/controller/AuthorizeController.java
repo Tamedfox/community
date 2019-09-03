@@ -6,6 +6,7 @@ import find.cf.community.mapper.UserMapper;
 import find.cf.community.model.User;
 import find.cf.community.provider.GitHubProvider;
 import find.cf.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import java.util.UUID;
  */
 
 @Controller
+@Slf4j
 public class AuthorizeController {
 
     @Autowired
@@ -71,6 +73,7 @@ public class AuthorizeController {
             return "redirect:/";
         }else{
             //登录失败
+            log.error("call back get github error,{}",gitHubUser);
             return "redirect:/";
         }
     }

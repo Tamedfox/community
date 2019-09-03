@@ -2,6 +2,7 @@ package find.cf.community.Interceptor;
 
 import find.cf.community.mapper.UserMapper;
 import find.cf.community.model.User;
+import find.cf.community.service.NotificationService;
 import find.cf.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
@@ -28,6 +32,9 @@ public class SessionInterceptor implements HandlerInterceptor {
                     User user = userService.findByToken(token);
                     if(user != null){
                         request.getSession().setAttribute("user",user);
+
+                        Long unreadCount = notificationService.unreadCount(user.getId());
+                        request.getSession().setAttribute("unReadCount", unreadCount);
                     }
                     break;
                 }

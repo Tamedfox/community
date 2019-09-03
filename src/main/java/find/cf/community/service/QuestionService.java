@@ -14,7 +14,7 @@ public interface QuestionService {
      * @param page
      * @param size
      */
-    PaginationDTO list(Integer page, Integer size);
+    PaginationDTO list(String search ,Integer page, Integer size);
 
 
     /**

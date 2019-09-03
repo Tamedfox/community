@@ -29,7 +29,7 @@ public class ProfileController {
     @GetMapping("/profile/{action}")
     public String profile(@PathVariable(name = "action") String action, Model model,
                           @RequestParam(name = "page",defaultValue = "1") Integer page,
-                          @RequestParam(name = "size",defaultValue = "2") Integer size,
+                          @RequestParam(name = "size",defaultValue = "10") Integer size,
                           HttpServletRequest request){
 
         User user = (User) request.getSession().getAttribute("user");
@@ -46,9 +46,7 @@ public class ProfileController {
             model.addAttribute("pagination",pagination);
         }else if("replies".equals(action)){
             PaginationDTO pagination = notificationService.list(user.getId(),page,size);
-            Long unreadCount = notificationService.unreadCount(user.getId());
             model.addAttribute("pagination",pagination);
-            model.addAttribute("unreadCount",unreadCount);
             model.addAttribute("section","replies");
             model.addAttribute("sectionName","我的回复");
         }
